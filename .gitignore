@@ -1,0 +1,23 @@
+# Ignore frontend dependencies and build outputs
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Ignore Python virtual environment and cache files
+backend/venv/
+**/__pycache__/
+*.pyc
+
+# Ignore editor configs
+.vscode/
+
+
+datasets/processed/
+
+
+
+backend/app/ml_models
+
+
+
+
