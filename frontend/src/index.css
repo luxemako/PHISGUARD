@@ -1,0 +1,50 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+}
+
+main {
+  width: min(600px, 90%);
+  margin: 100px auto;
+  padding: 32px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px #0002;
+}
+
+form {
+  display: flex;
+  gap: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 12px;
+}
+
+button {
+  padding: 12px 20px;
+  cursor: pointer;
+}
+
+section {
+  margin-top: 24px;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.legitimate {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.phishing,
+.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
