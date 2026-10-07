@@ -26,6 +26,11 @@ def main():
     X = pd.DataFrame(
         data["url"].apply(extract_url_features).tolist()
     )
+<<<<<<< HEAD
+=======
+    # Login/account words in a path are common on legitimate websites.
+    X = X.drop(columns=["has_suspicious_word_in_path"], errors="ignore")
+>>>>>>> 5a9a7e0f789cfc6e27ef0129d373bedccb4039fa
     y = data["label"]
 
     # Train/test split
@@ -64,4 +69,8 @@ def main():
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     main()
+=======
+    main()
+>>>>>>> 5a9a7e0f789cfc6e27ef0129d373bedccb4039fa

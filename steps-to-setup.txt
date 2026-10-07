@@ -1,0 +1,44 @@
+PHISHGUARD QUICK SETUP
+
+Run these commands from the project root using Git Bash.
+
+1. Create and activate the Python environment
+
+py -3.11 -m venv backend/venv
+source backend/venv/Scripts/activate
+python -m pip install -r backend/requirements.txt
+
+2. Install frontend packages
+
+cd frontend
+npm install
+cd ..
+
+3. Put these datasets in datasets/raw/
+
+450k URL.csv
+phishing_email.csv
+
+4. Prepare datasets
+
+python backend/training/prepare_url_dataset.py
+python backend/training/prepare_text_dataset.py
+
+5. Train models
+
+python backend/training/train_url_modal.py
+python backend/training/train_text_model.py
+
+6. Run backend
+
+cd backend
+python -m uvicorn app.main:app --reload
+
+7. Run frontend in a second terminal
+
+cd frontend
+npm run dev
+
+Open http://localhost:5173
+
+More information: README.md
