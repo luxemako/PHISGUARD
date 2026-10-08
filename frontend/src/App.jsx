@@ -10,7 +10,6 @@ import {
 } from "./services/api";
 
 export default function App() {
-  const [page, setPage] = useState("scanner");
   const [dashboardRefresh, setDashboardRefresh] = useState(0);
   const [activeTab, setActiveTab] = useState("url");
   const [url, setUrl] = useState("");
@@ -52,28 +51,48 @@ export default function App() {
   }
 
   return (
-    <main className={`app-shell ${page === "dashboard" ? "wide" : ""}`}>
-      <header>
-        <div className="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 64 64">
-            <path d="M32 5 54 14v15c0 14-9 25-22 30C19 54 10 43 10 29V14Z" />
-            <path d="m22 32 7 7 14-16" />
-          </svg>
+    <main className="app-shell wide">
+      <header className="hero">
+        <div className="hero-copy">
+          <div className="brand">
+            <span className="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 64 64">
+                <path d="M32 5 54 14v15c0 14-9 25-22 30C19 54 10 43 10 29V14Z" />
+                <path d="m22 32 7 7 14-16" />
+              </svg>
+            </span>
+            <span>PhishGuard</span>
+          </div>
+          <p className="eyebrow">AI-powered threat protection</p>
+          <h1>Know before you click.</h1>
+          <p>Scan suspicious URLs, messages, and emails in seconds.</p>
         </div>
-        <div>
-          <p className="eyebrow">AI-powered threat scanner</p>
-          <h1>Browse with confidence.</h1>
-          <p>Check a URL, message, or email before you trust it.</p>
+        <div className="security-graphic" aria-hidden="true">
+          <svg viewBox="0 0 320 250">
+            <circle className="orbit" cx="160" cy="125" r="94" />
+            <circle className="orbit orbit-two" cx="160" cy="125" r="67" />
+            <path className="shield" d="M160 47 220 71v43c0 42-24 72-60 88-36-16-60-46-60-88V71Z" />
+            <path className="check" d="m132 123 20 20 39-45" />
+            <circle className="node node-one" cx="65" cy="104" r="8" />
+            <circle className="node node-two" cx="253" cy="84" r="6" />
+            <circle className="node node-three" cx="238" cy="181" r="7" />
+            <g className="phish-mail">
+              <rect x="24" y="117" width="42" height="30" rx="5" />
+              <path d="m28 122 17 13 17-13" />
+            </g>
+            <path className="phish-hook" d="M275 101v31c0 13-17 14-17 2 0-7 9-8 13-4" />
+          </svg>
         </div>
       </header>
 
-      <nav className="main-nav" aria-label="Main navigation">
-        <button className={page === "scanner" ? "active" : ""} onClick={() => setPage("scanner")}>Scanner</button>
-        <button className={page === "dashboard" ? "active" : ""} onClick={() => setPage("dashboard")}>Dashboard</button>
-      </nav>
-
-      {page === "scanner" ? (
-        <div className="scanner-view">
+      <div className="workspace">
+        <section className="scanner-panel" aria-labelledby="scanner-title">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Threat scanner</p>
+              <h2 id="scanner-title">Check suspicious content</h2>
+            </div>
+          </div>
           <ScannerTabs
             activeTab={activeTab}
             onChange={changeTab}
@@ -100,7 +119,7 @@ export default function App() {
               value={text}
               onChange={(event) => setText(event.target.value)}
               placeholder="Paste the message here"
-              rows="7"
+              rows="4"
               required
             />
           </label>
@@ -122,7 +141,7 @@ export default function App() {
               <textarea
                 value={emailBody}
                 onChange={(event) => setEmailBody(event.target.value)}
-                rows="8"
+                rows="4"
                 required
               />
             </label>
@@ -142,10 +161,9 @@ export default function App() {
       )}
 
           <ResultCard result={result} />
-        </div>
-      ) : (
+        </section>
         <Dashboard refreshKey={dashboardRefresh} />
-      )}
+      </div>
     </main>
   );
 }
