@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "name": "frontend",
-=======
   "name": "frontened",
->>>>>>> 5a9a7e0f789cfc6e27ef0129d373bedccb4039fa
   "private": true,
   "version": "0.0.0",
   "type": "module",

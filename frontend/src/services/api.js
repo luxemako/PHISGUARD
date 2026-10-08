@@ -2,11 +2,11 @@ const API_URL = "http://127.0.0.1:8000/api";
 
 async function request(path, body) {
   const response = await fetch(`${API_URL}${path}`, {
-    method: "POST",
+    method: body ? "POST" : "GET",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
+    ...(body && { body: JSON.stringify(body) }),
   });
 
   const data = await response.json().catch(() => ({}));
@@ -35,4 +35,8 @@ export function analyzeEmail(subject, body) {
     subject,
     body,
   });
+}
+
+export function getDashboard() {
+  return request("/dashboard");
 }

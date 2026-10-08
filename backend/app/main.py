@@ -1,38 +1,20 @@
-<<<<<<< HEAD
-from pathlib import Path
-
-import joblib
-import pandas as pd
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-
-from app.services.url_features import extract_url_features
-
-
-# Load model
-MODEL_PATH = Path(__file__).parent / "ml_models" / "url_model.pkl"
-package = joblib.load(MODEL_PATH)
-
-model = package["model"]
-feature_names = package["feature_names"]
-
-
-# FastAPI
-app = FastAPI(title="PhishGuard API")
-=======
 import ipaddress
 import logging
+from contextlib import asynccontextmanager
 from pathlib import Path
 from urllib.parse import urlparse
 
 import joblib
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, field_validator
+from sqlalchemy.orm import Session
 
+from app.database import engine, get_db
+from app.models import Base
+from app.repository import get_dashboard, save_scan
 from app.services.analyzers import analyze_email, analyze_text, analyze_url
 
 logger = logging.getLogger(__name__)
@@ -43,12 +25,20 @@ url_model = url_package["model"]
 url_feature_names = url_package["feature_names"]
 text_model = joblib.load(MODEL_DIR / "text_model.pkl")
 
+
+@asynccontextmanager
+async def lifespan(application):
+    if engine:
+        Base.metadata.create_all(bind=engine)
+    yield
+
+
 app = FastAPI(
     title="PhishGuard API",
     description="Message, email, and URL risk analysis",
     version="2.0.0",
+    lifespan=lifespan,
 )
->>>>>>> 5a9a7e0f789cfc6e27ef0129d373bedccb4039fa
 
 app.add_middleware(
     CORSMiddleware,
@@ -58,37 +48,6 @@ app.add_middleware(
 )
 
 
-<<<<<<< HEAD
-class URLRequest(BaseModel):
-    url: str
-
-
-@app.get("/api/health")
-def health():
-    return {"status": "online"}
-
-
-@app.post("/api/analyze/url")
-def analyze_url(request: URLRequest):
-
-    # Extract URL features
-    features = extract_url_features(request.url)
-
-    # Convert features to model input
-    input_data = pd.DataFrame([features])[feature_names]
-
-    # Prediction
-    prediction = int(model.predict(input_data)[0])
-    probability = model.predict_proba(input_data)[0]
-
-    risk_score = round(float(probability[1]) * 100, 2)
-
-    return {
-        "url": request.url,
-        "prediction": "phishing" if prediction == 1 else "legitimate",
-        "risk_score": risk_score,
-    }
-=======
 def require_text(value, field_name):
     value = value.strip()
     if len(value) < 3:
@@ -170,20 +129,33 @@ def health():
         "status": "online",
         "url_model_loaded": True,
         "text_model_loaded": True,
+        "database_configured": engine is not None,
     }
 
 
+@app.get("/api/dashboard")
+def dashboard(
+    limit: int = Query(default=10, ge=1, le=50),
+    db: Session = Depends(get_db),
+):
+    return get_dashboard(db, limit)
+
+
 @app.post("/api/analyze/url")
-def analyze_url_endpoint(request: URLRequest):
+def analyze_url_endpoint(
+    request: URLRequest,
+    db: Session = Depends(get_db),
+):
     try:
         result = analyze_url(
             request.url,
             url_model,
             url_feature_names,
         )
-
+        save_scan(db, "url", request.url, result)
         return result
     except Exception as error:
+        db.rollback()
         logger.exception("URL analysis failed")
         raise HTTPException(
             500,
@@ -191,12 +163,16 @@ def analyze_url_endpoint(request: URLRequest):
         ) from error
 
 @app.post("/api/analyze/text")
-def analyze_text_endpoint(request: TextRequest):
+def analyze_text_endpoint(
+    request: TextRequest,
+    db: Session = Depends(get_db),
+):
     try:
         result = analyze_text(request.text, text_model)
-
+        save_scan(db, "text", request.text, result)
         return result
     except Exception as error:
+        db.rollback()
         logger.exception("Text analysis failed")
         raise HTTPException(
             500,
@@ -204,7 +180,10 @@ def analyze_text_endpoint(request: TextRequest):
         ) from error
 
 @app.post("/api/analyze/email")
-def analyze_email_endpoint(request: EmailRequest):
+def analyze_email_endpoint(
+    request: EmailRequest,
+    db: Session = Depends(get_db),
+):
     try:
         result = analyze_email(
             request.subject,
@@ -213,12 +192,13 @@ def analyze_email_endpoint(request: EmailRequest):
             url_model,
             url_feature_names,
         )
-
+        content = f"{request.subject}\n{request.body}"
+        save_scan(db, "email", content, result)
         return result
     except Exception as error:
+        db.rollback()
         logger.exception("Email analysis failed")
         raise HTTPException(
             500,
             "Unable to analyze the email.",
         ) from error
->>>>>>> 5a9a7e0f789cfc6e27ef0129d373bedccb4039fa

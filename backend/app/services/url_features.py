@@ -1,22 +1,4 @@
 import ipaddress
-<<<<<<< HEAD
-from urllib.parse import urlparse
-
-
-SUSPICIOUS_WORDS = [
-    "login",
-    "verify",
-    "account",
-    "secure",
-    "bank",
-    "update",
-    "password",
-    "signin",
-]
-
-
-def has_ip(hostname):
-=======
 import re
 from urllib.parse import parse_qsl, unquote, urlparse
 
@@ -54,7 +36,6 @@ SUSPICIOUS_EXTENSIONS = {".apk", ".bat", ".cmd", ".exe", ".js", ".msi", ".rar", 
 
 
 def contains_ip_address(hostname):
->>>>>>> 5a9a7e0f789cfc6e27ef0129d373bedccb4039fa
     try:
         ipaddress.ip_address(hostname)
         return 1
@@ -62,39 +43,6 @@ def contains_ip_address(hostname):
         return 0
 
 
-<<<<<<< HEAD
-def extract_url_features(url):
-    url = str(url).strip().lower()
-
-    # Add protocol only for parsing
-    parse_url = url if "://" in url else "http://" + url
-    parsed = urlparse(parse_url)
-
-    domain = parsed.hostname or ""
-    path = parsed.path
-
-    return {
-        "url_length": len(url),
-        "domain_length": len(domain),
-        "path_length": len(path),
-
-        "dot_count": url.count("."),
-        "hyphen_count": url.count("-"),
-        "slash_count": url.count("/"),
-        "digit_count": sum(c.isdigit() for c in url),
-
-        "has_https": int(url.startswith("https://")),
-        "has_ip_address": has_ip(domain),
-
-        "has_at_symbol": int("@" in url),
-
-        "has_suspicious_word": int(
-            any(word in url for word in SUSPICIOUS_WORDS)
-        ),
-
-        "subdomain_count": max(domain.count(".") - 1, 0),
-    }
-=======
 def contains_suspicious_word(value):
     tokens = set(re.findall(r"[a-z0-9]+", unquote(value.lower())))
     return int(bool(tokens & SUSPICIOUS_WORDS))
@@ -280,4 +228,3 @@ def extract_url_features(url):
         )),
         "has_double_slash_in_path": int("//" in path),
     }
->>>>>>> 5a9a7e0f789cfc6e27ef0129d373bedccb4039fa

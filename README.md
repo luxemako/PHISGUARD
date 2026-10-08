@@ -8,6 +8,7 @@ The result is only a risk estimate. Do not treat it as proof that a link is safe
 
 - Python 3.11
 - Node.js and npm
+- PostgreSQL
 - Git Bash on Windows
 
 Run the commands below from the project root.
@@ -26,7 +27,23 @@ If the environment already exists, only activate it:
 source backend/venv/Scripts/activate
 ```
 
-## 2. Set up the frontend
+## 2. Configure PostgreSQL
+
+Create the database in PostgreSQL:
+
+```sql
+CREATE DATABASE phishguard;
+```
+
+Create your local environment file:
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+Open `backend/.env` and replace `YOUR_PASSWORD` with your PostgreSQL password. The backend creates the `scans` table automatically when it starts.
+
+## 3. Set up the frontend
 
 ```bash
 cd frontend
@@ -34,7 +51,7 @@ npm install
 cd ..
 ```
 
-## 3. Add the datasets
+## 4. Add the datasets
 
 Place these files in `datasets/raw/`:
 
@@ -48,14 +65,14 @@ Dataset sources:
 - [URL phishing dataset](https://www.kaggle.com/datasets/xntrng15/url-phishing-dataset)
 - [Phishing email dataset](https://www.kaggle.com/datasets/naserabdullahalam/phishing-email-dataset)
 
-## 4. Prepare the datasets
+## 5. Prepare the datasets
 
 ```bash
 python backend/training/prepare_url_dataset.py
 python backend/training/prepare_text_dataset.py
 ```
 
-## 5. Train the models
+## 6. Train the models
 
 ```bash
 python backend/training/train_url_modal.py
@@ -64,7 +81,7 @@ python backend/training/train_text_model.py
 
 You only need to repeat steps 4 and 5 after changing a dataset or model feature.
 
-## 6. Run the backend
+## 7. Run the backend
 
 ```bash
 cd backend
@@ -75,7 +92,7 @@ API documentation: <http://127.0.0.1:8000/docs>
 
 Keep this terminal running.
 
-## 7. Run the frontend
+## 8. Run the frontend
 
 Open a second terminal from the project root:
 
@@ -86,7 +103,7 @@ npm run dev
 
 Application: <http://localhost:5173>
 
-## 8. Run checks
+## 9. Run checks
 
 Backend tests:
 
@@ -114,7 +131,7 @@ python -m pip install -r backend/requirements.txt
 
 ### The model cannot be loaded
 
-Run the dataset preparation and model training commands from steps 4 and 5.
+Run the dataset preparation and model training commands from steps 5 and 6.
 
 ### The frontend cannot reach the backend
 

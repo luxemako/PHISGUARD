@@ -1,33 +1,9 @@
-<<<<<<< HEAD
-# Ignore frontend dependencies and build outputs
-frontend/node_modules/
-frontend/dist/
-frontend/build/
-
-# Ignore Python virtual environment and cache files
-backend/venv/
-**/__pycache__/
-*.pyc
-
-# Ignore editor configs
-.vscode/
-
-
-datasets/processed/
-
-
-
-backend/app/ml_models
-
-
-
-
-=======
 /backend/venv/
 /backend/app/__pycache__/
 /backend/app/services/__pycache__/
 /backend/training/__pycache__/
 /backend/tests/__pycache__/
+/backend/.env
 /.vscode/
 /datasets/raw/450k URL.csv
 /datasets/raw/legitimate_url.txt
@@ -35,4 +11,3 @@ backend/app/ml_models
 /datasets/raw/phishing_email.csv
 /datasets/processed/phishing_urls.csv
 /datasets/processed/text_messages.csv
->>>>>>> 5a9a7e0f789cfc6e27ef0129d373bedccb4039fa

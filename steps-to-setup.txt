@@ -8,33 +8,51 @@ py -3.11 -m venv backend/venv
 source backend/venv/Scripts/activate
 python -m pip install -r backend/requirements.txt
 
-2. Install frontend packages
+2. Configure PostgreSQL
+
+Copy backend/.env.example to backend/.env
+Replace YOUR_PASSWORD in backend/.env
+
+CREATE DATABASE phishguard;
+
+CREATE TABLE scans (
+    id BIGSERIAL PRIMARY KEY,
+    scan_type VARCHAR(20) NOT NULL,
+    input_preview TEXT,
+    prediction VARCHAR(20) NOT NULL,
+    risk_score NUMERIC(5,2) NOT NULL,
+    risk_level VARCHAR(20),
+    warning_signs JSONB NOT NULL DEFAULT '[]',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+3. Install frontend packages
 
 cd frontend
 npm install
 cd ..
 
-3. Put these datasets in datasets/raw/
+4. Put these datasets in datasets/raw/
 
 450k URL.csv
 phishing_email.csv
 
-4. Prepare datasets
+5. Prepare datasets
 
 python backend/training/prepare_url_dataset.py
 python backend/training/prepare_text_dataset.py
 
-5. Train models
+6. Train models
 
 python backend/training/train_url_modal.py
 python backend/training/train_text_model.py
 
-6. Run backend
+7. Run backend
 
 cd backend
 python -m uvicorn app.main:app --reload
 
-7. Run frontend in a second terminal
+8. Run frontend in a second terminal
 
 cd frontend
 npm run dev
