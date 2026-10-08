@@ -3,7 +3,6 @@
 /backend/app/services/__pycache__/
 /backend/training/__pycache__/
 /backend/tests/__pycache__/
-/backend/.env
 /.vscode/
 /datasets/raw/450k URL.csv
 /datasets/raw/legitimate_url.txt
