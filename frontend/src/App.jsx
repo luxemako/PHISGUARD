@@ -63,25 +63,34 @@ export default function App() {
             </span>
             <span>PhishGuard</span>
           </div>
-          <p className="eyebrow">AI-powered threat protection</p>
-          <h1>Know before you click.</h1>
-          <p>Scan suspicious URLs, messages, and emails in seconds.</p>
+          <p className="eyebrow">Smart phishing protection</p>
+          <h1>Check first. Click safely.</h1>
+          <p>A simple safety check for links, messages, and emails.</p>
         </div>
-        <div className="security-graphic" aria-hidden="true">
+        <div className="security-graphic" role="img" aria-label="Animated shield blocking a phishing email">
           <svg viewBox="0 0 320 250">
             <circle className="orbit" cx="160" cy="125" r="94" />
             <circle className="orbit orbit-two" cx="160" cy="125" r="67" />
-            <path className="shield" d="M160 47 220 71v43c0 42-24 72-60 88-36-16-60-46-60-88V71Z" />
-            <path className="check" d="m132 123 20 20 39-45" />
+            <g className="shield-group">
+              <path className="shield" d="M160 47 220 71v43c0 42-24 72-60 88-36-16-60-46-60-88V71Z" />
+              <path className="check" d="m132 123 20 20 39-45" />
+              <path className="scan-line" d="M112 106h96" />
+            </g>
             <circle className="node node-one" cx="65" cy="104" r="8" />
             <circle className="node node-two" cx="253" cy="84" r="6" />
             <circle className="node node-three" cx="238" cy="181" r="7" />
+            <path className="threat-trail" d="M18 132h74" />
             <g className="phish-mail">
               <rect x="24" y="117" width="42" height="30" rx="5" />
               <path d="m28 122 17 13 17-13" />
             </g>
+            <g className="block-impact">
+              <circle cx="102" cy="132" r="13" />
+              <path d="m102 108v-10M102 166v-10M78 132H68M136 132h-10" />
+            </g>
             <path className="phish-hook" d="M275 101v31c0 13-17 14-17 2 0-7 9-8 13-4" />
           </svg>
+          <span className="motion-status"><i /> Threat blocked</span>
         </div>
       </header>
 
@@ -90,7 +99,8 @@ export default function App() {
           <div className="section-heading">
             <div>
               <p className="eyebrow">Threat scanner</p>
-              <h2 id="scanner-title">Check suspicious content</h2>
+              <h2 id="scanner-title">Scan for phishing</h2>
+              <p className="section-copy">Choose a content type and paste what you want to check.</p>
             </div>
           </div>
           <ScannerTabs
@@ -107,6 +117,7 @@ export default function App() {
               value={url}
               onChange={(event) => setUrl(event.target.value)}
               placeholder="https://example.com"
+              autoComplete="url"
               required
             />
           </label>
@@ -141,6 +152,7 @@ export default function App() {
               <textarea
                 value={emailBody}
                 onChange={(event) => setEmailBody(event.target.value)}
+                placeholder="Paste the email content here"
                 rows="4"
                 required
               />
@@ -150,6 +162,12 @@ export default function App() {
 
         <button type="submit" disabled={loading}>
           {loading && <span className="spinner" aria-hidden="true" />}
+          {!loading && (
+            <svg className="button-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3 20 6v5c0 5-3 8-8 10-5-2-8-5-8-10V6Z" />
+              <path d="m9 12 2 2 4-5" />
+            </svg>
+          )}
           {loading ? "Analyzing..." : "Scan for threats"}
         </button>
       </form>
